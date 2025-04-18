@@ -6,6 +6,8 @@ import authRoutes from './routes/auth/authRoutes.js'
 import mediaRoutes from './routes/instructor/mediaRoutes.js'
 import adminRoutes from './routes/admin/adminRoutes.js'
 import instructorCourseRoutes from './routes/instructor/courseRoutes.js'
+import instructorDiscountRoutes from './routes/instructor/discountRoutes.js'
+import studentRoutes from './routes/student/studentRoutes.js'
 
 dotenv.config()
 
@@ -30,7 +32,9 @@ mongoose
 
 app.use('/auth', authRoutes)
 app.use('/media', mediaRoutes)
+app.use('/instructor/discount', instructorDiscountRoutes)
 app.use('/instructor/course', instructorCourseRoutes)
+app.use('/student', studentRoutes)
 app.use('/admin', adminRoutes)
 
 app.listen(PORT, () => {

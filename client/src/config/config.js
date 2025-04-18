@@ -57,19 +57,6 @@ export const initialRegisterFormData = {
   password: '',
 }
 
-export const languageOptions = [
-  { id: 'vietnam', label: 'Vietnamese' },
-  { id: 'english', label: 'English' },
-  { id: 'spanish', label: 'Spanish' },
-  { id: 'french', label: 'French' },
-  { id: 'german', label: 'German' },
-  { id: 'chinese', label: 'Chinese' },
-  { id: 'japanese', label: 'Japanese' },
-  { id: 'korean', label: 'Korean' },
-  { id: 'portuguese', label: 'Portuguese' },
-  { id: 'russian', label: 'Russian' },
-]
-
 export const courseLevelOptions = [
   { id: 'beginner', label: 'Beginner' },
   { id: 'intermediate', label: 'Intermediate' },
@@ -114,14 +101,6 @@ export const courseLandingPageFormControls = [
     options: courseLevelOptions,
   },
   {
-    name: 'primaryLanguage',
-    label: 'Primary Language',
-    componentType: 'select',
-    type: 'text',
-    placeholder: '',
-    options: languageOptions,
-  },
-  {
     name: 'subtitle',
     label: 'Subtitle',
     componentType: 'input',
@@ -161,7 +140,6 @@ export const courseLandingInitialFormData = {
   title: '',
   category: '',
   level: '',
-  primaryLanguage: '',
   subtitle: '',
   description: '',
   pricing: '',
@@ -189,5 +167,4 @@ export const sortOptions = [
 export const filterOptions = {
   category: courseCategories,
   level: courseLevelOptions,
-  primaryLanguage: languageOptions,
 }

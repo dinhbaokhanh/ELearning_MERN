@@ -20,7 +20,7 @@ const RouteGuard = ({ authenticated, user, element }) => {
       if (!path.startsWith('/instructor')) {
         return <Navigate to="/instructor" replace />
       }
-    } else if (role === 'user') {
+    } else if (role === 'student') {
       if (
         path.startsWith('/admin') ||
         path.startsWith('/instructor') ||

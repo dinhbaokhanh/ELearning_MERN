@@ -6,14 +6,10 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: {
     type: String,
-    enum: ['admin', 'provider', 'student'],
+    enum: ['admin', 'instructor', 'student'],
     default: 'student',
   },
-  isProviderRequested: {
-    type: Boolean,
-    default: false,
-  },
-  isProvider: {
+  isInstructorRequested: {
     type: Boolean,
     default: false,
   },

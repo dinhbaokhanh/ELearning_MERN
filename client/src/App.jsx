@@ -10,77 +10,83 @@ import NotFound from './pages/not-found/NotFound'
 import InstructorLayout from './components/layout/instructor/InstructorLayout'
 import AddNewCourseLayout from './components/layout/instructor/AddCourseLayout'
 import AdminLayout from './components/layout/admin/AdminLayout'
+import { Toaster } from 'react-hot-toast'
+import Courses from './pages/student/course/Courses'
 
 function App() {
   const { auth } = useContext(AuthContext)
 
   return (
-    <Routes>
-      <Route
-        path="/auth"
-        element={
-          <RouteGuard
-            element={<Auth />}
-            authenticated={auth.authenticate}
-            user={auth?.user}
-          />
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <RouteGuard
-            element={<AdminLayout />}
-            authenticated={auth.authenticate}
-            user={auth?.user}
-          />
-        }
-      />
-      <Route
-        path="/instructor"
-        element={
-          <RouteGuard
-            element={<InstructorLayout />}
-            authenticated={auth.authenticate}
-            user={auth?.user}
-          />
-        }
-      />
-      <Route
-        path="/instructor/create-course"
-        element={
-          <RouteGuard
-            element={<AddNewCourseLayout />}
-            authenticated={auth.authenticate}
-            user={auth?.user}
-          />
-        }
-      />
-      <Route
-        path="/instructor/edit-course/:courseId"
-        element={
-          <RouteGuard
-            element={<AddNewCourseLayout />}
-            authenticated={auth.authenticate}
-            user={auth?.user}
-          />
-        }
-      />
-      <Route
-        path="/"
-        element={
-          <RouteGuard
-            element={<CommonLayout />}
-            authenticated={auth.authenticate}
-            user={auth?.user}
-          />
-        }
-      >
-        <Route path="" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route
+          path="/auth"
+          element={
+            <RouteGuard
+              element={<Auth />}
+              authenticated={auth.authenticate}
+              user={auth?.user}
+            />
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <RouteGuard
+              element={<AdminLayout />}
+              authenticated={auth.authenticate}
+              user={auth?.user}
+            />
+          }
+        />
+        <Route
+          path="/instructor"
+          element={
+            <RouteGuard
+              element={<InstructorLayout />}
+              authenticated={auth.authenticate}
+              user={auth?.user}
+            />
+          }
+        />
+        <Route
+          path="/instructor/create-course"
+          element={
+            <RouteGuard
+              element={<AddNewCourseLayout />}
+              authenticated={auth.authenticate}
+              user={auth?.user}
+            />
+          }
+        />
+        <Route
+          path="/instructor/edit-course/:courseId"
+          element={
+            <RouteGuard
+              element={<AddNewCourseLayout />}
+              authenticated={auth.authenticate}
+              user={auth?.user}
+            />
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <RouteGuard
+              element={<CommonLayout />}
+              authenticated={auth.authenticate}
+              user={auth?.user}
+            />
+          }
+        >
+          <Route path="" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/courses" element={<Courses />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Toaster position="top-right" />
+    </>
   )
 }
 

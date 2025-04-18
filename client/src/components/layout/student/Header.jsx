@@ -2,11 +2,14 @@ import { Button } from '@/components/ui/button'
 import { AuthContext } from '@/context/auth/authContext'
 import { SwatchBook, TvMinimalPlay, Search } from 'lucide-react'
 import React, { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 const Header = () => {
   const navigate = useNavigate()
   const { resetCredentials } = useContext(AuthContext)
+
+  const location = useLocation()
+  const pathname = location.pathname
 
   function handleLogout() {
     resetCredentials()
@@ -27,17 +30,36 @@ const Header = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
-            <Link to="/home" className="hover:text-orange-500 transition">
+            <Link
+              to="/home"
+              className={`hover:text-orange-500 transition ${
+                pathname === '/home' ? 'text-orange-600 font-semibold' : ''
+              }`}
+            >
               Home
             </Link>
-            <Link to="/courses" className="hover:text-orange-500 transition">
+            <Link
+              to="/courses"
+              className={`hover:text-orange-500 transition ${
+                pathname === '/courses' ? 'text-orange-600 font-semibold' : ''
+              }`}
+            >
               Courses
             </Link>
-            <Link to="/blog" className="hover:text-orange-500 transition">
+            <Link
+              to="/blog"
+              className={`hover:text-orange-500 transition ${
+                pathname === '/blog' ? 'text-orange-600 font-semibold' : ''
+              }`}
+            >
               Blog
             </Link>
             <div className="relative group cursor-pointer">
-              <span className="hover:text-orange-500 flex items-center gap-1 transition">
+              <span
+                className={`hover:text-orange-500 flex items-center gap-1 transition ${
+                  pathname === '/contact' ? 'text-orange-600 font-semibold' : ''
+                }`}
+              >
                 Contact
               </span>
             </div>

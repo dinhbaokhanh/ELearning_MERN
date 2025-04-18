@@ -66,6 +66,40 @@ export async function updateCourseByIdService(id, formData) {
   return data
 }
 
+export async function createDiscountService(instructorId, formData) {
+  const { data } = await axiosInstance.post(
+    `/instructor/discount/${instructorId}`,
+    formData
+  )
+  return data
+}
+
+export async function getDiscountService(instructorId) {
+  const { data } = await axiosInstance.get(
+    `/instructor/discount/${instructorId}`
+  )
+  return data
+}
+
+export async function updateDiscountService(
+  instructorId,
+  discountId,
+  formData
+) {
+  const { data } = await axiosInstance.put(
+    `/instructor/discount/${instructorId}/${discountId}`,
+    formData
+  )
+  return data
+}
+
+export async function deleteDiscountService(instructorId, discountId) {
+  const { data } = await axiosInstance.delete(
+    `/instructor/discount/${instructorId}/${discountId}`
+  )
+  return data
+}
+
 export async function mediaBulkUploadService(formData, onProgressCallback) {
   const { data } = await axiosInstance.post('/media/bulk-upload', formData, {
     onUploadProgress: (progressEvent) => {
@@ -76,5 +110,57 @@ export async function mediaBulkUploadService(formData, onProgressCallback) {
     },
   })
 
+  return data
+}
+
+export async function fetchUsersListService() {
+  const { data } = await axiosInstance.get('/admin/users')
+  return data
+}
+
+export async function changeUserRoleService(id) {
+  const { data } = await axiosInstance.put(`/admin/users/change-role/${id}`)
+  return data
+}
+
+export async function deleteUserService(id) {
+  const { data } = await axiosInstance.delete(`/admin/users/${id}`)
+  return data
+}
+
+export async function fetchAllCoursesService() {
+  const { data } = await axiosInstance.get('/admin/courses')
+  return data
+}
+
+export async function acceptCourseService(id) {
+  const { data } = await axiosInstance.put(`/admin/courses/accept/${id}`)
+  return data
+}
+
+export async function rejectCourseService(id) {
+  const { data } = await axiosInstance.put(`/admin/courses/reject/${id}`)
+  return data
+}
+
+export async function acceptInstructorService(id) {
+  const { data } = await axiosInstance.put(`/admin/users/accept-provider/${id}`)
+  return data
+}
+
+export async function rejectInstructorService(id) {
+  const { data } = await axiosInstance.put(`/admin/users/reject-provider/${id}`)
+  return data
+}
+
+export async function fetchStudentCoursesService(query) {
+  const { data } = await axiosInstance.get(`/student/course/get?${query}`)
+  return data
+}
+
+export async function fetchStudentCoursesDeService(courseId) {
+  const { data } = await axiosInstance.get(
+    `/student/course/get/details/${courseId}`
+  )
   return data
 }

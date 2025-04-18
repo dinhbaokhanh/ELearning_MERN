@@ -1,5 +1,5 @@
 import Dashboard from '@/pages/instructor/Dashboard'
-import { BarChart, Book, LogOut } from 'lucide-react'
+import { BarChart, Book, TicketPercent, LogOut } from 'lucide-react'
 import React, { useContext, useEffect, useState } from 'react'
 import Courses from '@/pages/instructor/Courses/Courses'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
@@ -8,6 +8,7 @@ import { AuthContext } from '@/context/auth/authContext'
 import { useNavigate } from 'react-router-dom'
 import { InstructorContext } from '@/context/instructor/instructorContext'
 import { fetchInstructorCourseListService } from '@/services/service'
+import DiscountLayout from './DiscountLayout'
 
 const InstructorLayout = () => {
   const navigate = useNavigate()
@@ -46,6 +47,12 @@ const InstructorLayout = () => {
       label: 'Courses',
       value: 'courses',
       component: <Courses courseList={instructorCourseList} />,
+    },
+    {
+      icon: TicketPercent,
+      label: 'Discounts',
+      value: 'discounts',
+      component: <DiscountLayout />,
     },
     {
       icon: LogOut,
