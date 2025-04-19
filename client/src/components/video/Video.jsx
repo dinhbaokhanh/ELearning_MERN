@@ -93,7 +93,7 @@ const VideoPlayer = ({
       ref={playerContainerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setShowControls(false)}
-      className={`relative rounded-lg overflow-hidden bg-black transition-all duration-300 ease-in-out ${
+      className={`relative overflow-hidden bg-black transition-all duration-300 ease-in-out ${
         isFullScreen ? 'w-screen h-screen' : ''
       }`}
       style={{ width, height }}

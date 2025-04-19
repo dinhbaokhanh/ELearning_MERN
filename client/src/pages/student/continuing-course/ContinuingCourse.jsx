@@ -118,12 +118,12 @@ const ContinuingCourse = () => {
         <div className="flex items-center space-x-4">
           <Button
             onClick={() => navigate('/student-courses')}
-            className="text-[#f97316] hover:bg-orange-100"
+            className="text-[#f97316] hover:bg-orange-100 cursor-pointer"
             variant="ghost"
             size="sm"
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
-            Back to My Courses Page
+            Back to My Courses
           </Button>
           <h1 className="text-lg font-semibold hidden md:block">
             {studentCurrentCourseProgress?.courseDetails?.title}
@@ -131,7 +131,7 @@ const ContinuingCourse = () => {
         </div>
         <Button
           onClick={() => setIsSideBarOpen(!isSideBarOpen)}
-          className="text-[#f97316] hover:bg-orange-100"
+          className="text-[#f97316] hover:bg-orange-100 cursor-pointer"
           size="icon"
         >
           {isSideBarOpen ? (
@@ -169,13 +169,13 @@ const ContinuingCourse = () => {
             <TabsList className="grid w-full grid-cols-2 h-14 bg-gray-100">
               <TabsTrigger
                 value="content"
-                className="text-[#f97316] hover:bg-orange-100 rounded-none h-full"
+                className="text-[#f97316] hover:bg-orange-100 rounded-none h-full cursor-pointer"
               >
                 Course Content
               </TabsTrigger>
               <TabsTrigger
                 value="overview"
-                className="text-[#f97316] hover:bg-orange-100 rounded-none h-full"
+                className="text-[#f97316] hover:bg-orange-100 rounded-none h-full cursor-pointer"
               >
                 Overview
               </TabsTrigger>
@@ -242,12 +242,16 @@ const ContinuingCourse = () => {
               <Label>You have completed the course</Label>
               <div className="flex flex-row gap-3">
                 <Button
-                  className="bg-[#f97316] text-white hover:bg-orange-600"
+                  className="bg-[#f97316] text-white hover:bg-orange-600 cursor-pointer"
                   onClick={() => navigate('/student-courses')}
                 >
                   My Courses Page
                 </Button>
-                <Button variant="outline" onClick={handleRewatchCourse}>
+                <Button
+                  className="cursor-pointer"
+                  variant="outline"
+                  onClick={handleRewatchCourse}
+                >
                   Rewatch Course
                 </Button>
               </div>

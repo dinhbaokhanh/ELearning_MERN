@@ -79,7 +79,6 @@ const CourseDetails = () => {
       coursePricing: studentCourseDetails?.pricing,
     }
 
-    console.log(paymentPayload, 'paymentPayload')
     const response = await createPaymentService(paymentPayload)
 
     if (response.success) {
@@ -118,15 +117,6 @@ const CourseDetails = () => {
   if (approvalUrl !== '') {
     window.location.href = approvalUrl
   }
-
-  console.log(studentCourseDetails)
-
-  const getIndexOfFreePreviewUrl =
-    studentCourseDetails !== null
-      ? studentCourseDetails?.outline?.findIndex((item) => item.freePreview)
-      : -1
-
-  console.log(studentCourseDetails)
 
   return (
     <div className="container mx-auto px-4 max-w-7xl mt-6 relative">

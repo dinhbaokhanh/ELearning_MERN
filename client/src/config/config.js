@@ -126,7 +126,7 @@ export const courseLandingPageFormControls = [
     label: 'Objectives',
     componentType: 'textarea',
     type: 'text',
-    placeholder: 'Enter course objectives',
+    placeholder: 'Enter course objectives and break the line if use dot (.)',
   },
   {
     name: 'welcomeMessage',
