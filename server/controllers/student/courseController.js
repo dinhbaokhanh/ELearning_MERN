@@ -1,4 +1,5 @@
 import Course from '../../models/Course.js'
+import StudentCourses from '../../models/StudentCourses.js'
 
 const getAllStudentCourses = async (req, res) => {
   try {
@@ -63,7 +64,7 @@ const getAllStudentCourses = async (req, res) => {
 
 const getStudentCourseDetails = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id, studentId } = req.params
     const courseDetails = await Course.findById(id)
 
     if (!courseDetails) {
@@ -73,6 +74,7 @@ const getStudentCourseDetails = async (req, res) => {
         data: null,
       })
     }
+
     res.status(200).json({
       success: true,
       data: courseDetails,
@@ -86,4 +88,30 @@ const getStudentCourseDetails = async (req, res) => {
   }
 }
 
-export { getAllStudentCourses, getStudentCourseDetails }
+const checkCoursePurchaseInfo = async (req, res) => {
+  try {
+    const { id, studentId } = req.params
+    const studentCourses = await StudentCourses.findOne({
+      userId: studentId,
+    })
+
+    const ifStudentAlreadyBoughtCurrentCourse =
+      studentCourses.courses.findIndex((item) => item.courseId === id) > -1
+    res.status(200).json({
+      success: true,
+      data: ifStudentAlreadyBoughtCurrentCourse,
+    })
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({
+      success: false,
+      message: 'Some error occurred!',
+    })
+  }
+}
+
+export {
+  getAllStudentCourses,
+  getStudentCourseDetails,
+  checkCoursePurchaseInfo,
+}

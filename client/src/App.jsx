@@ -12,6 +12,10 @@ import AddNewCourseLayout from './components/layout/instructor/AddCourseLayout'
 import AdminLayout from './components/layout/admin/AdminLayout'
 import { Toaster } from 'react-hot-toast'
 import Courses from './pages/student/course/Courses'
+import CourseDetails from './pages/student/course/CourseDetails'
+import PaypalPaymentReturnPage from './pages/student/payment/Payment'
+import PaidCourse from './pages/student/paid-course/PaidCourse'
+import ContinuingCourse from './pages/student/continuing-course/ContinuingCourse'
 
 function App() {
   const { auth } = useContext(AuthContext)
@@ -80,8 +84,12 @@ function App() {
           }
         >
           <Route path="" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/courses" element={<Courses />} />
+          <Route path="home" element={<Home />} />
+          <Route path="courses" element={<Courses />} />
+          <Route path="course/details/:id" element={<CourseDetails />} />
+          <Route path="payment-return" element={<PaypalPaymentReturnPage />} />
+          <Route path="student-courses" element={<PaidCourse />} />
+          <Route path="continuing-course/:id" element={<ContinuingCourse />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

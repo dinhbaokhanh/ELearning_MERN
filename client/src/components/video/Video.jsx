@@ -169,7 +169,7 @@ function IconBtn({ onClick, children }) {
       onClick={onClick}
       variant="ghost"
       size="icon"
-      className="text-zinc-100 hover:bg-zinc-700/80"
+      className="text-zinc-100 hover:bg-zinc-700/80 cursor-pointer"
     >
       {children}
     </Button>

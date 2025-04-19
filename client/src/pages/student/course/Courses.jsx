@@ -20,7 +20,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { StudentContext } from '@/context/student/studentContext'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { fetchStudentCoursesService } from '@/services/service'
-import { createSearchParams, useSearchParams } from 'react-router-dom'
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
 const Courses = () => {
   const [sort, setSort] = useState('price-lowtohigh')
@@ -28,6 +32,7 @@ const Courses = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState('list')
+  const navigate = useNavigate()
 
   const {
     studentCourseList,
@@ -192,6 +197,9 @@ const Courses = () => {
               <div className="space-y-4">
                 {paginatedCourses.map((courseItem) => (
                   <Card
+                    onClick={() =>
+                      navigate(`/course/details/${courseItem?._id}`)
+                    }
                     key={courseItem?._id}
                     className="hover:shadow-md transition-shadow cursor-pointer rounded-lg overflow-hidden border border-gray-200"
                   >
@@ -250,7 +258,12 @@ const Courses = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {paginatedCourses.map((courseItem) => (
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                  <Card
+                    onClick={() =>
+                      navigate(`/course/details/${courseItem?._id}`)
+                    }
+                    className="hover:shadow-md transition-shadow cursor-pointer"
+                  >
                     <CardContent className="p-4 flex flex-col h-full">
                       <div className="w-full h-40 mb-4 overflow-hidden rounded-md">
                         <img

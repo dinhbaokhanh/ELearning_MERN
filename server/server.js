@@ -8,6 +8,9 @@ import adminRoutes from './routes/admin/adminRoutes.js'
 import instructorCourseRoutes from './routes/instructor/courseRoutes.js'
 import instructorDiscountRoutes from './routes/instructor/discountRoutes.js'
 import studentRoutes from './routes/student/studentRoutes.js'
+import studentOrderRoutes from './routes/student/orderRoutes.js'
+import studentCoursesRoutes from './routes/student/paidCourseRouter.js'
+import studentCourseProgressRoutes from './routes/student/courseProgressRoutes.js'
 
 dotenv.config()
 
@@ -35,6 +38,9 @@ app.use('/media', mediaRoutes)
 app.use('/instructor/discount', instructorDiscountRoutes)
 app.use('/instructor/course', instructorCourseRoutes)
 app.use('/student', studentRoutes)
+app.use('/student/order', studentOrderRoutes)
+app.use('/student/courses-bought', studentCoursesRoutes)
+app.use('/student/course-progress', studentCourseProgressRoutes)
 app.use('/admin', adminRoutes)
 
 app.listen(PORT, () => {

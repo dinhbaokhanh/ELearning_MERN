@@ -16,12 +16,45 @@ import {
 import { Button } from '@/components/ui/button'
 import { courseCategories } from '@/config/config'
 import { StudentContext } from '@/context/student/studentContext'
-import { fetchStudentCoursesService } from '@/services/service'
+import {
+  checkCoursePurchaseInfoService,
+  fetchStudentCoursesService,
+} from '@/services/service'
 import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '@/context/auth/authContext'
 
 const Home = () => {
   const { studentCourseList, setStudentCourseList } = useContext(StudentContext)
   const navigate = useNavigate()
+
+  const { auth } = useContext(AuthContext)
+
+  const handleNavigateToCoursesPage = (getCurrentId) => {
+    console.log(getCurrentId)
+    sessionStorage.removeItem('filters')
+    const currentFilter = {
+      category: [getCurrentId],
+    }
+
+    sessionStorage.setItem('filters', JSON.stringify(currentFilter))
+
+    navigate('/courses')
+  }
+
+  const handleCourseNavigate = async (getCurrentCourseId) => {
+    const response = await checkCoursePurchaseInfoService(
+      getCurrentCourseId,
+      auth?.user?._id
+    )
+
+    if (response?.success) {
+      if (response?.data) {
+        navigate(`/continuing-course/${getCurrentCourseId}`)
+      } else {
+        navigate(`/course/details/${getCurrentCourseId}`)
+      }
+    }
+  }
 
   const fetchAllStudentCourse = async () => {
     const res = await fetchStudentCoursesService()
