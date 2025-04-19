@@ -48,7 +48,7 @@ const markCurrentLectureAsViewed = async (req, res) => {
     }
 
     const allLecturesViewed =
-      progress.lecturesProgress.length === course.curriculum.length &&
+      progress.lecturesProgress.length === course.outline.length &&
       progress.lecturesProgress.every((item) => item.viewed)
 
     if (allLecturesViewed) {
@@ -64,10 +64,11 @@ const markCurrentLectureAsViewed = async (req, res) => {
       data: progress,
     })
   } catch (error) {
-    console.log(error)
+    console.error('Error details:', error)
     res.status(500).json({
       success: false,
       message: 'Some error occurred!',
+      error: error.message,
     })
   }
 }

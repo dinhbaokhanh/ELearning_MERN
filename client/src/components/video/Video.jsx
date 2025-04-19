@@ -83,8 +83,8 @@ const VideoPlayer = ({
   }, [])
 
   useEffect(() => {
-    if (played === 1) {
-      onProgressUpdate({ ...progressData, progressValue: played })
+    if (played >= 0.99) {
+      onProgressUpdate({ ...progressData, progressValue: 1 })
     }
   }, [played])
 

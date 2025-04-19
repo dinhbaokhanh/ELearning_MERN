@@ -20,12 +20,15 @@ import {
   markLectureAsViewedService,
   resetCourseProgressService,
 } from '@/services/service'
+import Confetti from 'react-confetti'
 
 const ContinuingCourse = () => {
   const navigate = useNavigate()
   const { auth } = useContext(AuthContext)
   const { studentCurrentCourseProgress, setStudentCurrentCourseProgress } =
     useContext(StudentContext)
+  const [loading, setLoading] = useState(false)
+
   const [lockCourse, setLockCourse] = useState(false)
   const [currentLecture, setCurrentLecture] = useState(null)
   const [showCourseCompleteDialog, setShowCourseCompleteDialog] =
@@ -34,7 +37,9 @@ const ContinuingCourse = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(true)
   const { id } = useParams()
 
-  async function fetchCurrentCourseProgress() {
+  const fetchCurrentCourseProgress = async () => {
+    if (loading) return
+    setLoading(true)
     const response = await getCurrentCourseProgressService(auth?.user?._id, id)
     if (response?.success) {
       if (!response?.data?.isPurchased) {
@@ -63,15 +68,16 @@ const ContinuingCourse = () => {
             -1
           )
 
-          setCurrentLecture(
-            response?.data?.courseDetails?.outline[lastIndexOfViewedAsTrue + 1]
-          )
+          const outline = response?.data?.courseDetails?.outline || []
+          const nextLecture = outline[lastIndexOfViewedAsTrue + 1] ?? outline[0]
+          setCurrentLecture(nextLecture)
         }
       }
     }
+    setLoading(false)
   }
 
-  async function updateCourseProgress() {
+  const updateCourseProgress = async () => {
     if (currentLecture) {
       const response = await markLectureAsViewedService(
         auth?.user?._id,
@@ -85,7 +91,7 @@ const ContinuingCourse = () => {
     }
   }
 
-  async function handleRewatchCourse() {
+  const handleRewatchCourse = async () => {
     const response = await resetCourseProgressService(
       auth?.user?._id,
       studentCurrentCourseProgress?.courseDetails?._id
@@ -95,7 +101,8 @@ const ContinuingCourse = () => {
       setCurrentLecture(null)
       setShowConfetti(false)
       setShowCourseCompleteDialog(false)
-      fetchCurrentCourseProgress()
+
+      window.location.reload()
     }
   }
 
@@ -104,8 +111,22 @@ const ContinuingCourse = () => {
   }, [id])
 
   useEffect(() => {
-    if (currentLecture?.progressValue === 1) updateCourseProgress()
-  }, [currentLecture])
+    return () => {
+      setCurrentLecture(null)
+      setStudentCurrentCourseProgress(null)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (
+      currentLecture?.progressValue === 1 &&
+      !studentCurrentCourseProgress?.progress?.some(
+        (p) => p.lectureId === currentLecture._id && p.viewed
+      )
+    ) {
+      updateCourseProgress()
+    }
+  }, [currentLecture?.progressValue])
 
   useEffect(() => {
     if (showConfetti) setTimeout(() => setShowConfetti(false), 15000)
@@ -238,22 +259,30 @@ const ContinuingCourse = () => {
             <DialogTitle className="text-[#f97316]">
               Congratulations!
             </DialogTitle>
-            <DialogDescription className="flex flex-col gap-3">
-              <Label>You have completed the course</Label>
-              <div className="flex flex-row gap-3">
-                <Button
-                  className="bg-[#f97316] text-white hover:bg-orange-600 cursor-pointer"
-                  onClick={() => navigate('/student-courses')}
-                >
-                  My Courses Page
-                </Button>
-                <Button
-                  className="cursor-pointer"
-                  variant="outline"
-                  onClick={handleRewatchCourse}
-                >
-                  Rewatch Course
-                </Button>
+
+            <DialogDescription className="flex flex-...">
+              <div
+                id="radix-«r8»"
+                data-slot="dialog-description"
+                className="text-muted-foreground text-sm flex flex-col gap-3"
+              >
+                <Label>
+                  <div className="flex flex-row gap-3">
+                    <Button
+                      className="bg-[#f97316] text-white hover:bg-orange-600 cursor-pointer"
+                      onClick={() => navigate('/student-courses')}
+                    >
+                      My Courses Page
+                    </Button>
+                    <Button
+                      className="cursor-pointer"
+                      variant="outline"
+                      onClick={handleRewatchCourse}
+                    >
+                      Rewatch Course
+                    </Button>
+                  </div>
+                </Label>
               </div>
             </DialogDescription>
           </DialogHeader>
