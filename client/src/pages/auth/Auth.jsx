@@ -63,13 +63,13 @@ const Auth = () => {
           <TabsList className="grid grid-cols-2 w-full mb-4 border rounded-lg overflow-hidden bg-slate-50">
             <TabsTrigger
               value="login"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+              className="data-[state=active]:bg-orange-500 data-[state=active]:text-white cursor-pointer"
             >
               Log In
             </TabsTrigger>
             <TabsTrigger
               value="register"
-              className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+              className="data-[state=active]:bg-orange-500 data-[state=active]:text-white cursor-pointer"
             >
               Register
             </TabsTrigger>

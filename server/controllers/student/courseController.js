@@ -110,8 +110,107 @@ const checkCoursePurchaseInfo = async (req, res) => {
   }
 }
 
+const calculateAverageRating = (reviews) => {
+  if (reviews.length === 0) return 0
+  const total = reviews.reduce((sum, r) => sum + r.rating, 0)
+  return parseFloat((total / reviews.length).toFixed(1))
+}
+
+const addReviewToCourse = async (req, res) => {
+  const { courseId } = req.params
+  const { studentId, studentName, rating, comment } = req.body
+
+  if (!studentId || !studentName || !rating || !comment) {
+    return res.status(400).json({ message: 'Missing required fields' })
+  }
+
+  if (rating < 1 || rating > 5) {
+    return res.status(400).json({ message: 'Rating must be between 1 and 5' })
+  }
+
+  if (!comment.trim()) {
+    return res.status(400).json({ message: 'Comment cannot be empty' })
+  }
+
+  try {
+    const course = await Course.findById(courseId)
+    if (!course) return res.status(404).json({ message: 'Course not found' })
+
+    const existing = course.rating.reviews.find(
+      (r) => r.studentId === studentId
+    )
+    if (existing) {
+      return res
+        .status(400)
+        .json({ message: 'You already reviewed this course' })
+    }
+
+    course.rating.reviews.push({ studentId, studentName, rating, comment })
+
+    const total = course.rating.reviews.reduce((sum, r) => sum + r.rating, 0)
+    course.rating.totalRatings = course.rating.reviews.length
+    course.rating.average = total / course.rating.totalRatings
+
+    await course.save()
+
+    res.status(200).json({
+      message: 'Review added successfully',
+      averageRating: course.rating.average,
+    })
+  } catch (err) {
+    console.error('Error adding review:', err)
+    res.status(500).json({ message: 'Error adding review', error: err.message })
+  }
+}
+
+const updateReviewInCourse = async (req, res) => {
+  const { courseId, studentId } = req.params
+  const { rating, comment } = req.body
+
+  if (rating < 1 || rating > 5) {
+    return res.status(400).json({ message: 'Rating must be between 1 and 5' })
+  }
+
+  if (!comment.trim()) {
+    return res.status(400).json({ message: 'Comment cannot be empty' })
+  }
+
+  try {
+    const course = await Course.findById(courseId)
+    if (!course) return res.status(404).json({ message: 'Course not found' })
+
+    const review = course.rating.reviews.find((r) => r.studentId === studentId)
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' })
+    }
+
+    review.rating = rating
+    review.comment = comment
+    review.date = new Date()
+
+    const total = course.rating.reviews.reduce((sum, r) => sum + r.rating, 0)
+    course.rating.totalRatings = course.rating.reviews.length
+    course.rating.average = total / course.rating.totalRatings
+
+    await course.save()
+
+    res.status(200).json({
+      message: 'Review updated successfully',
+      averageRating: course.rating.average,
+    })
+  } catch (err) {
+    console.error('Error updating review:', err)
+    res.status(500).json({
+      message: 'Error updating review',
+      error: err.message,
+    })
+  }
+}
+
 export {
   getAllStudentCourses,
   getStudentCourseDetails,
   checkCoursePurchaseInfo,
+  addReviewToCourse,
+  updateReviewInCourse,
 }

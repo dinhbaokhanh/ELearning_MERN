@@ -28,7 +28,10 @@ import {
 
 const Courses = () => {
   const [sort, setSort] = useState('price-lowtohigh')
-  const [filters, setFilters] = useState({})
+  const [filters, setFilters] = useState(() => {
+    const savedFilters = sessionStorage.getItem('filters')
+    return savedFilters ? JSON.parse(savedFilters) : {}
+  })
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState('list')
@@ -204,16 +207,20 @@ const Courses = () => {
                     className="hover:shadow-md transition-shadow cursor-pointer rounded-lg overflow-hidden border border-gray-200"
                   >
                     <CardContent className="flex gap-4 p-4">
-                      <div className="w-40 h-32 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+                      <div className="w-100 h-52 flex-shrink-0 overflow-hidden rounded-md bg-gray-100 relative">
                         <img
                           src={courseItem?.image}
                           alt={courseItem?.title}
                           className="w-full h-full object-cover"
                         />
+                        <span className="absolute top-2 left-2 bg-black text-white text-xs font-semibold px-3 py-1 rounded-full opacity-90 z-10">
+                          {courseItem?.category || 'Course'}
+                        </span>
                       </div>
-                      <div className="flex-1 flex flex-col justify-between">
+
+                      <div className="flex-1 flex flex-col justify-evenly">
                         <div>
-                          <CardTitle className="text-lg font-semibold mb-2 line-clamp-2">
+                          <CardTitle className="text-2xl font-semibold mb-2 line-clamp-2">
                             {courseItem?.title}
                           </CardTitle>
                           <p className="text-sm text-muted-foreground mb-1">
@@ -224,8 +231,8 @@ const Courses = () => {
                           </p>
                         </div>
 
-                        <div className="mt-auto">
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                        <div className="">
+                          <div className="items-center gap-2 text-xl text-muted-foreground mb-2">
                             <div className="flex items-center">
                               <BookOpen className="w-4 h-4 mr-1" />
                               {courseItem?.outline?.length}{' '}
@@ -265,13 +272,17 @@ const Courses = () => {
                     className="hover:shadow-md transition-shadow cursor-pointer"
                   >
                     <CardContent className="p-4 flex flex-col h-full">
-                      <div className="w-full h-40 mb-4 overflow-hidden rounded-md">
+                      <div className="w-full h-40 mb-4 overflow-hidden rounded-md relative">
                         <img
                           src={courseItem?.image}
                           alt="Course"
                           className="w-full h-full object-cover"
                         />
+                        <span className="absolute top-2 left-2 bg-black text-white text-xs font-semibold px-3 py-1 rounded-full opacity-90 z-10">
+                          {courseItem?.category || 'Course'}
+                        </span>
                       </div>
+
                       <CardTitle className="text-lg">
                         {courseItem?.title}
                       </CardTitle>
@@ -292,7 +303,7 @@ const Courses = () => {
                         <p className="text-lg font-bold text-primary">
                           {courseItem?.pricing === 0
                             ? 'Free'
-                            : `${courseItem?.pricing} VND`}
+                            : `${courseItem?.pricing}đ`}
                         </p>
                         <button className="cursor-pointer text-sm font-bold px-3 py-1 rounded-md text-primary hover:bg-primary/10 transition-colors">
                           View More

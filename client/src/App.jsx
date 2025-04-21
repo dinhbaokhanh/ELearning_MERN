@@ -16,6 +16,8 @@ import CourseDetails from './pages/student/course/CourseDetails'
 import PaypalPaymentReturnPage from './pages/student/payment/Payment'
 import PaidCourse from './pages/student/paid-course/PaidCourse'
 import ContinuingCourse from './pages/student/continuing-course/ContinuingCourse'
+import Request from './pages/student/contact/Request'
+import Contact from './pages/student/contact/Contact'
 
 function App() {
   const { auth } = useContext(AuthContext)
@@ -90,6 +92,8 @@ function App() {
           <Route path="payment-return" element={<PaypalPaymentReturnPage />} />
           <Route path="student-courses" element={<PaidCourse />} />
           <Route path="continuing-course/:id" element={<ContinuingCourse />} />
+          <Route path="request" element={<Request />} />
+          <Route path="contact" element={<Contact />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

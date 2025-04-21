@@ -54,7 +54,7 @@ const Header = () => {
             >
               Blog
             </Link>
-            <div className="relative group cursor-pointer">
+            <Link to="/contact" className="relative group cursor-pointer">
               <span
                 className={`hover:text-orange-500 flex items-center gap-1 transition ${
                   pathname === '/contact' ? 'text-orange-600 font-semibold' : ''
@@ -62,7 +62,7 @@ const Header = () => {
               >
                 Contact
               </span>
-            </div>
+            </Link>
           </nav>
         </div>
 

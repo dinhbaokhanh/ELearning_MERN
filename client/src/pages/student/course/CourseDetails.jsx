@@ -14,12 +14,15 @@ import VideoPlayer from '@/components/video/Video'
 import { AuthContext } from '@/context/auth/authContext'
 import { StudentContext } from '@/context/student/studentContext'
 import {
+  addReviewToCourseService,
   createPaymentService,
   fetchStudentCoursesDetailsService,
+  updateReviewInCourseService,
 } from '@/services/service'
 import { PlayCircle, Lock } from 'lucide-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const CourseDetails = () => {
   const {
@@ -38,20 +41,82 @@ const CourseDetails = () => {
     useState(null)
   const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false)
   const [approvalUrl, setApprovalUrl] = useState('')
-  const [isPurchased, setIsPurchased] = useState(null)
+  const [isPurchased, setIsPurchased] = useState(false)
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const reviewsPerPage = 3
+
+  const reviews = studentCourseDetails?.rating?.reviews || []
+  const totalPages = Math.ceil(reviews.length / reviewsPerPage)
+  const startIndex = (currentPage - 1) * reviewsPerPage
+  const currentReviews = reviews.slice(startIndex, startIndex + reviewsPerPage)
+
+  const [reviewText, setReviewText] = useState('')
+  const [rating, setRating] = useState(0)
+
+  const studentId = auth?.user?._id || ''
+  const studentName = auth?.user?.username || ''
+
+  const hasReviewed = studentCourseDetails?.rating?.reviews?.some(
+    (r) => r.studentId === studentId
+  )
+
+  useEffect(() => {
+    if (studentCourseDetails?.students && auth?.user?._id) {
+      const isBought = studentCourseDetails.students.some(
+        (student) => student.studentId === auth.user._id
+      )
+      setIsPurchased(isBought)
+    }
+  }, [studentCourseDetails, auth])
+
+  useEffect(() => {
+    if (hasReviewed) {
+      const existingReview = studentCourseDetails.rating.reviews.find(
+        (r) => r.studentId === studentId
+      )
+      if (existingReview) {
+        setReviewText(existingReview.comment)
+        setRating(existingReview.rating)
+      }
+    }
+  }, [studentCourseDetails, studentId])
+
+  const handleSubmitReview = async () => {
+    const reviewData = {
+      studentId,
+      studentName,
+      comment: reviewText,
+      rating,
+    }
+
+    try {
+      if (hasReviewed) {
+        await updateReviewInCourseService(
+          studentCourseDetails._id,
+          studentId,
+          reviewData
+        )
+      } else {
+        await addReviewToCourseService(studentCourseDetails?._id, reviewData)
+      }
+      toast.success('Review submitted!')
+    } catch (err) {
+      toast.error('Failed to submit review')
+      console.error(err)
+    }
+  }
 
   const fetchStudentCoursesDetails = async () => {
-    const res = await fetchStudentCoursesDetailsService(
-      currentCourseDetailsId,
-      auth?.user?._id
+    const response = await fetchStudentCoursesDetailsService(
+      currentCourseDetailsId
     )
-    if (res?.success) {
-      setStudentCourseDetails(res?.data)
-      setIsPurchased(res?.isPurchased)
+
+    if (response?.success) {
+      setStudentCourseDetails(response?.data)
       setLoadingState(false)
     } else {
       setStudentCourseDetails(null)
-      setIsPurchased(false)
       setLoadingState(false)
     }
   }
@@ -110,9 +175,6 @@ const CourseDetails = () => {
   }, [location.pathname])
 
   if (loadingState) return <Skeleton />
-
-  if (isPurchased !== null && isPurchased) {
-  }
 
   if (approvalUrl !== '') {
     window.location.href = approvalUrl
@@ -238,10 +300,152 @@ const CourseDetails = () => {
             <TabsContent value="reviews">
               <Card>
                 <CardHeader>
-                  <CardTitle>Student Reviews</CardTitle>
+                  <CardTitle className="text-xl font-bold">Comments</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-500 italic">No reviews yet.</p>
+                  <div className="mb-6">
+                    <div className="flex items-center space-x-2 text-2xl font-semibold text-gray-800">
+                      <span>
+                        {studentCourseDetails?.rating?.average?.toFixed(1) ||
+                          '0.0'}
+                      </span>
+                      <div className="flex items-center text-yellow-500">
+                        {[...Array(5)].map((_, i) => (
+                          <span key={i}>
+                            {i <
+                            Math.round(
+                              studentCourseDetails?.rating?.average || 0
+                            )
+                              ? '★'
+                              : '☆'}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500 mb-4">
+                      based on {studentCourseDetails?.rating?.totalRatings || 0}{' '}
+                      ratings
+                    </div>
+
+                    {[5, 4, 3, 2, 1].map((star) => {
+                      const count =
+                        studentCourseDetails?.rating?.reviews?.filter(
+                          (r) => r.rating === star
+                        ).length || 0
+                      const total =
+                        studentCourseDetails?.rating?.totalRatings || 1
+                      const percentage = Math.round((count / total) * 100)
+                      return (
+                        <div
+                          key={star}
+                          className="flex items-center text-sm mb-1"
+                        >
+                          <span className="w-6">{star}★</span>
+                          <div className="w-full h-2 bg-gray-200 rounded mx-2">
+                            <div
+                              className="h-full bg-yellow-400 rounded"
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          </div>
+                          <span>{percentage}%</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  {reviews.length > 0 ? (
+                    [...currentReviews]
+                      .sort((a, b) => new Date(b.date) - new Date(a.date))
+                      .map((review, index) => (
+                        <div key={index} className="mb-6 border-b pb-4">
+                          <div className="flex items-center space-x-3">
+                            <img
+                              src={`https://ui-avatars.com/api/?name=${review.studentName}`}
+                              alt="avatar"
+                              className="w-10 h-10 rounded-full"
+                            />
+                            <div>
+                              <div className="font-semibold">
+                                {review.studentName}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {new Date(review.date).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-2 flex text-yellow-500 text-sm">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i}>
+                                {i < review.rating ? '★' : '☆'}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="mt-2 text-gray-700 text-sm">
+                            {review.comment}
+                          </p>
+                        </div>
+                      ))
+                  ) : (
+                    <p className="text-gray-500 italic">No reviews yet.</p>
+                  )}
+
+                  <div className="flex justify-center space-x-2 my-6">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <Button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`w-8 h-8 rounded-full border cursor-pointer ${
+                            page === currentPage
+                              ? 'bg-orange-500 text-white'
+                              : 'bg-white text-gray-700'
+                          }`}
+                        >
+                          {page}
+                        </Button>
+                      )
+                    )}
+                  </div>
+
+                  {isPurchased && (
+                    <div className="mt-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        Leave A Comment
+                      </h3>
+                      <textarea
+                        placeholder="Write your review here..."
+                        className="w-full p-3 border border-gray-300 rounded-md text-sm"
+                        rows={4}
+                        onChange={(e) => setReviewText(e.target.value)}
+                      />
+                      <div className="flex items-center space-x-2 mt-3">
+                        {[...Array(5)].map((_, idx) => (
+                          <span
+                            key={idx}
+                            className={`cursor-pointer text-2xl ${
+                              idx < rating ? 'text-yellow-500' : 'text-gray-300'
+                            }`}
+                            onClick={() => setRating(idx + 1)}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center mt-4">
+                        <input type="checkbox" className="mr-2" />
+                        <label className="text-sm text-gray-500">
+                          Save my name, email in this browser for the next time
+                          I comment
+                        </label>
+                      </div>
+                      <Button
+                        onClick={handleSubmitReview}
+                        className="mt-4 bg-orange-500 text-white py-2 px-6 rounded hover:bg-orange-600"
+                      >
+                        Post Comment
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -249,25 +453,31 @@ const CourseDetails = () => {
         </main>
 
         <div className="absolute right-4 top-[112px] w-full md:w-[360px] z-10 hidden md:block">
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 transition-all duration-300 ease-in-out transform hover:scale-105">
             <img
               src={studentCourseDetails?.image}
               alt="Course"
-              className="w-full h-[180px] object-cover rounded-lg mb-4"
+              className="w-full h-[180px] object-cover rounded-lg mb-6 shadow-md"
             />
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-xl font-semibold text-orange-500">
-                {studentCourseDetails?.pricing === 0
-                  ? 'Free'
-                  : `${studentCourseDetails?.pricing} VND`}
+            {isPurchased ? (
+              <p className="text-center text-lg font-medium text-orange-500">
+                You have bought the course
               </p>
-              <Button
-                onClick={handleCreatePayment}
-                className="cursor-pointer py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition"
-              >
-                Start Now
-              </Button>
-            </div>
+            ) : (
+              <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+                <p className="text-xl font-semibold text-orange-500 mb-4 md:mb-0">
+                  {studentCourseDetails?.pricing === 0
+                    ? 'Free'
+                    : `${studentCourseDetails?.pricing} VND`}
+                </p>
+                <Button
+                  onClick={handleCreatePayment}
+                  className="py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105"
+                >
+                  Start Now
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

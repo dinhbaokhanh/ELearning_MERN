@@ -1,5 +1,4 @@
 import axiosInstance from '@/api/axios'
-import axios, { Axios } from 'axios'
 
 export async function registerService(formData) {
   const { data } = await axiosInstance.post('auth/register', {
@@ -230,5 +229,30 @@ export async function resetCourseProgressService(userId, courseId) {
     }
   )
 
+  return data
+}
+
+export async function requestToBeInstructorService(userId) {
+  const { data } = await axiosInstance.post(`/${userId}/request-instructor`)
+  return data
+}
+
+export async function addReviewToCourseService(courseId, reviewData) {
+  const { data } = await axiosInstance.post(
+    `/student/${courseId}/reviews`,
+    reviewData
+  )
+  return data
+}
+
+export async function updateReviewInCourseService(
+  courseId,
+  studentId,
+  reviewData
+) {
+  const { data } = await axiosInstance.put(
+    `/student/${courseId}/reviews/${studentId}`,
+    reviewData
+  )
   return data
 }

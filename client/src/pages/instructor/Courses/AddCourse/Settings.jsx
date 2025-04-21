@@ -41,8 +41,6 @@ const Settings = () => {
     }
   }
 
-  console.log(courseLandingFormData)
-
   return (
     <Card>
       <CardHeader>

@@ -35,6 +35,33 @@ const CourseSchema = new mongoose.Schema({
   ],
   outline: [LectureSchema],
   isPublished: Boolean,
+
+  rating: {
+    average: {
+      type: Number,
+      default: 0,
+    },
+    totalRatings: {
+      type: Number,
+      default: 0,
+    },
+    reviews: [
+      {
+        studentId: String,
+        studentName: String,
+        comment: String,
+        rating: {
+          type: Number,
+          min: 1,
+          max: 5,
+        },
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+  },
 })
 
 export default mongoose.models.Course || mongoose.model('Course', CourseSchema)

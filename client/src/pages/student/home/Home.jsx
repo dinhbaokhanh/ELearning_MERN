@@ -5,7 +5,7 @@ import {
   Database,
   Palette,
   Terminal,
-  Link,
+  Link as Linked,
   Radio,
   MessageSquare,
   Rocket,
@@ -22,6 +22,7 @@ import {
 } from '@/services/service'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '@/context/auth/authContext'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   const { studentCourseList, setStudentCourseList } = useContext(StudentContext)
@@ -30,7 +31,6 @@ const Home = () => {
   const { auth } = useContext(AuthContext)
 
   const handleNavigateToCoursesPage = (getCurrentId) => {
-    console.log(getCurrentId)
     sessionStorage.removeItem('filters')
     const currentFilter = {
       category: [getCurrentId],
@@ -121,7 +121,7 @@ const Home = () => {
                   {category.id === 'data-engineer' && <Database size={32} />}
                   {category.id === 'ui-ux-design' && <Palette size={32} />}
                   {category.id === 'devops' && <Terminal size={32} />}
-                  {category.id === 'blockchain' && <Link size={32} />}
+                  {category.id === 'blockchain' && <Linked size={32} />}
                   {category.id === 'robotics' && <Radio size={32} />}
                   {category.id === 'digital-marketing' && (
                     <MessageSquare size={32} />
@@ -210,6 +210,67 @@ const Home = () => {
             ) : (
               <h1>No Courses Found</h1>
             )}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-10 mt-14">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl py-8 px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div className="bg-white p-3 rounded-full shadow">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
+                  alt="Graduate Icon"
+                  className="w-10 h-10"
+                />
+              </div>
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+                Let's Start With Academy LMS As An INSTRUCTOR
+              </h2>
+            </div>
+
+            <div className="flex gap-4">
+              <Button className="cursor-pointer px-5 py-2 bg-orange-500 text-white font-medium rounded-full hover:bg-orange-600 transition">
+                <Link to="/request">Become An Instructor</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="flex justify-center">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4140/4140047.png"
+              alt="Learning Illustration"
+              className="w-80 h-auto"
+            />
+          </div>
+
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Grow Us Your Skill <br /> With EduPress LMS
+            </h2>
+            <p className="text-gray-600 mb-6">
+              We denounce with righteous indignation and dislike men who are so
+              beguiled and demoralized that cannot trouble.
+            </p>
+            <ul className="space-y-2 mb-6">
+              <li className="text-green-600">✔ Certification</li>
+              <li className="text-green-600">✔ Certification</li>
+              <li className="text-green-600">✔ Certification</li>
+              <li className="text-green-600">✔ Certification</li>
+            </ul>
+            <Button
+              onClick={() => {
+                navigate('/courses')
+              }}
+              className="bg-orange-500 hover:bg-orange-700 text-white rounded-full px-6 py-2 cursor-pointer"
+            >
+              Explore Course
+            </Button>
           </div>
         </div>
       </section>
