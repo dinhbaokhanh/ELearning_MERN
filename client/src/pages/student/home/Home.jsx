@@ -157,7 +157,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {studentCourseList && studentCourseList.length > 0 ? (
-              studentCourseList.map((courseItem) => (
+              studentCourseList.slice(0, 8).map((courseItem) => (
                 <div
                   key={courseItem?._id}
                   onClick={() => handleCourseNavigate(courseItem?._id)}

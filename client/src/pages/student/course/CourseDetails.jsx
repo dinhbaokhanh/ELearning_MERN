@@ -21,7 +21,7 @@ import {
 } from '@/services/service'
 import { PlayCircle, Lock } from 'lucide-react'
 import React, { useContext, useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
 const CourseDetails = () => {
@@ -33,6 +33,8 @@ const CourseDetails = () => {
     currentCourseDetailsId,
     setCurrentCourseDetailsId,
   } = useContext(StudentContext)
+
+  const navigate = useNavigate()
 
   const { auth } = useContext(AuthContext)
   const { id } = useParams()
@@ -147,11 +149,18 @@ const CourseDetails = () => {
     const response = await createPaymentService(paymentPayload)
 
     if (response.success) {
-      sessionStorage.setItem(
-        'currentOrderId',
-        JSON.stringify(response?.data?.orderId)
-      )
-      setApprovalUrl(response?.data?.approveUrl)
+      if (response.data?.isFree) {
+        toast.success('Registered Successfully')
+        navigate(`/student-courses`)
+      } else {
+        sessionStorage.setItem(
+          'currentOrderId',
+          JSON.stringify(response?.data?.orderId)
+        )
+        setApprovalUrl(response?.data?.approveUrl)
+      }
+    } else {
+      toast.error('There is some error')
     }
   }
 
