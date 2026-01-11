@@ -1,4 +1,4 @@
-import CommonForm from '@/components/common/common'
+import CommonForm from '@/components/common/Common'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { loginControls, registerControls } from '@/config/config'
