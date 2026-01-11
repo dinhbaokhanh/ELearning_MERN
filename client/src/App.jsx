@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import Auth from './pages/auth/auth'
+import Auth from './pages/auth/Auth'
 import RouteGuard from './components/route-guard/guard'
 import { useContext } from 'react'
 import { AuthContext } from './context/auth/authContext'
